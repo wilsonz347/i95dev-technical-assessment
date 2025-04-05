@@ -408,7 +408,6 @@ class LLMService:
         - Avoid keyword stuffing but ensure search engine optimization.
         - Keep it concise and descriptive.
     
-        META DESCRIPTION REQUIREMENTS:
         Write a meta description (100-120 characters) adhering to these rules:
         - Naturally include primary and secondary keywords 
         - Add a call-to-action like 'shop now,' 'learn more,' or 'discover today').
@@ -437,7 +436,65 @@ class LLMService:
         # TODO: Implement your prompt engineering strategy for marketing emails
         # CANDIDATE: IMPLEMENT THIS FUNCTION
         
-        prompt = "Generate a marketing email for a product. Add your implementation."
+        prompt = f"Create a compelling marketing email for the following product:\n\n"
+        
+        prompt += f"PRODUCT NAME: {product_data.get('name', '')}\n"
+        prompt += f"BRAND: {product_data.get('brand', '')}\n"
+        prompt += f"PRICE: ${product_data.get('price', '')}\n"
+        prompt += f"CATEGORY: ${product_data.get('category', '')}\n"
+        prompt += f"BASIC DESCRIPTION: ${product_data.get('basic_description', '')}\n"
+        prompt += f"MATERIALS: ${product_data.get('materials', '')}\n"
+        
+        for feature in product_data['features'][:2]: 
+            prompt += f"FEATURES: ${product_data.get('features', '')}\n"
+            
+        for tag in product_data['tags']:
+            prompt += f"TAGS: ${product_data.get('tags', '')}\n"
+        
+        prompt += f"\n--- GUIDELINES ---\n"
+        prompt += f"TONE: {style.get('tone', 'enthusiastic')}\n"
+        
+        # Generate email based on length
+        if style.get('length') == 'short':
+            prompt += "LENGTH: Brief email, approximately 100-125 words\n"
+        elif style.get('length') == 'long':
+            prompt += "LENGTH: Detailed email, approximately 250-275 words\n"
+        else: 
+            prompt += "LENGTH: Standard email, approximately 175-200 words\n"
+        
+        prompt += f"TARGET AUDIENCE: {style.get('audience', 'general consumers')}\n"
+         
+        prompt += """
+        Generate a marketing email using this structure:  
+
+        SUBJECT LINE:  
+        - Create a 50-60 character subject line that sparks curiosity or highlights a key benefit.  
+
+        OPENING HOOK:
+        - Start with a relatable question/scenario addressing the reader's pain point.  
+
+        BODY:
+        - Use a benefit-focused phrase like "Why [Product] Works Better".  
+        - Highlight 2-3 outcomes like "Saves time" or "Reduces stress".  
+        - Use phrases like "Feel confident"  
+        - Mention exclusivity
+        - Link benefits to specific struggles
+
+        CALL-TO-ACTION:
+        - Use action verbs
+
+        URGENCY ELEMENT:
+        - Add subtle urgency like "Limited spots available."
+
+        FORMATTING:  
+        - Write in second person ("you").  
+        - Avoid generic terms like "innovative."  
+
+        Follow this structure when formulating your response:
+        Subject Line: [Your subject line]  
+
+        [Email body with subheading, benefits, and call-to-action]  
+        """
         
         return prompt
     

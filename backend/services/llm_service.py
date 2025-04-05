@@ -385,18 +385,32 @@ class LLMService:
         
         prompt = f"Generate SEO-optimized title and meta description for the following e-commerce product:\n\n"
         
-        prompt += f"PRODUCT NAME: {product_data.get('name', '')}\n"
-        prompt += f"BRAND: {product_data.get('brand', '')}\n"
-        prompt += f"PRICE: ${product_data.get('price', '')}\n"
-        prompt += f"CATEGORY: {product_data.get('category', '')}\n"
-        prompt += f"BASIC DESCRIPTION: {product_data.get('basic_description', '')}\n"
-        prompt += f"MATERIALS: {product_data.get('materials', '')}\n"
+        if product_data.get('name'):
+            prompt += f"PRODUCT NAME: {product_data.get('name', '')}\n"
         
-        for feature in product_data['features'][:2]: 
-            prompt += f"FEATURES: {product_data.get('features', '')}\n"
+        if product_data.get('brand'):
+            prompt += f"BRAND: {product_data.get('brand', '')}\n"
+        
+        if product_data.get('price'):
+            prompt += f"PRICE: ${product_data.get('price', '')}\n"
+        
+        if product_data.get('category'):
+            prompt += f"CATEGORY: {product_data.get('category', '')}\n"
             
-        for tag in product_data['tags']:
-            prompt += f"TAGS: {product_data.get('tags', '')}\n"
+        if product_data.get('basic_description'):
+            prompt += f"BASIC DESCRIPTION: {product_data.get('basic_description', '')}\n"
+            
+        if product_data.get('materials'):
+            for material in product_data['materials']:
+                prompt += f"MATERIALS: {material}\n"
+        
+        if product_data.get('features'):
+            for feature in product_data['features'][:2]: 
+                prompt += f"FEATURES: {feature}\n"
+            
+        if product_data.get('tags'):
+            for tag in product_data['tags']:
+                prompt += f"TAGS: {tag}\n"
         
         prompt += f"\nGUIDELINES\n"
         prompt += f"TONE: {style.get('tone', 'professional')}\n"
@@ -438,18 +452,28 @@ class LLMService:
         
         prompt = f"Create a compelling marketing email for the following product:\n\n"
         
-        prompt += f"PRODUCT NAME: {product_data.get('name', '')}\n"
-        prompt += f"BRAND: {product_data.get('brand', '')}\n"
-        prompt += f"PRICE: ${product_data.get('price', '')}\n"
-        prompt += f"CATEGORY: {product_data.get('category', '')}\n"
-        prompt += f"BASIC DESCRIPTION: {product_data.get('basic_description', '')}\n"
-        prompt += f"MATERIALS: {product_data.get('materials', '')}\n"
+        if product_data.get('name'):
+            prompt += f"PRODUCT NAME: {product_data.get('name', '')}\n"
         
-        for feature in product_data['features'][:2]: 
-            prompt += f"FEATURES: {product_data.get('features', '')}\n"
+        if product_data.get('brand'):
+            prompt += f"BRAND: {product_data.get('brand', '')}\n"
+        
+        if product_data.get('price'):
+            prompt += f"PRICE: ${product_data.get('price', '')}\n"
+        
+        if product_data.get('category'):
+            prompt += f"CATEGORY: {product_data.get('category', '')}\n"
             
-        for tag in product_data['tags']:
-            prompt += f"TAGS: {product_data.get('tags', '')}\n"
+        if product_data.get('basic_description'):
+            prompt += f"BASIC DESCRIPTION: {product_data.get('basic_description', '')}\n"
+            
+        if product_data.get('materials'):
+            for material in product_data['materials']:
+                prompt += f"MATERIALS: {material}\n"
+        
+        if product_data.get('features'):
+            for feature in product_data['features'][:2]: 
+                prompt += f"FEATURES: {feature}\n"
         
         prompt += f"\nGUIDELINES\n"
         prompt += f"TONE: {style.get('tone', 'enthusiastic')}\n"
@@ -914,4 +938,28 @@ And so on for each requested platform.
         # CANDIDATE: IMPLEMENT THIS FUNCTION
         
         # Basic implementation - should be replaced with proper parsing
-        return {"category": "Sample Category", "features": ["Sample Feature 1", "Sample Feature 2"]}
+        
+        # Approach 1: Directly load as json
+        try:
+            new_product_data = json.loads(response_text)
+            return new_product_data
+        except json.JSONDecodeError as e:
+            print(f"Error: {e}")
+            return {}
+        
+        # Approach 2: Parse it as string to dict
+        REQUIRED_FIELDS = ['name', 'brand', 'basic_description', 'price', 'category', 'subcategory']
+        LIST_FIELDS = ['features', 'materials', 'colors', 'tags']
+        
+        lines = response_text.splitlines()
+        data = {}
+        
+        for line in lines:
+            if ":" in line:
+                key, value = line.split(':', 1)
+                key = key.strip().lower()
+                value = value.strip()
+                data[key] = value
+                
+        return data
+            

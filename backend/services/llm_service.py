@@ -388,17 +388,17 @@ class LLMService:
         prompt += f"PRODUCT NAME: {product_data.get('name', '')}\n"
         prompt += f"BRAND: {product_data.get('brand', '')}\n"
         prompt += f"PRICE: ${product_data.get('price', '')}\n"
-        prompt += f"CATEGORY: ${product_data.get('category', '')}\n"
-        prompt += f"BASIC DESCRIPTION: ${product_data.get('basic_description', '')}\n"
-        prompt += f"MATERIALS: ${product_data.get('materials', '')}\n"
+        prompt += f"CATEGORY: {product_data.get('category', '')}\n"
+        prompt += f"BASIC DESCRIPTION: {product_data.get('basic_description', '')}\n"
+        prompt += f"MATERIALS: {product_data.get('materials', '')}\n"
         
         for feature in product_data['features'][:2]: 
-            prompt += f"FEATURES: ${product_data.get('features', '')}\n"
+            prompt += f"FEATURES: {product_data.get('features', '')}\n"
             
         for tag in product_data['tags']:
-            prompt += f"TAGS: ${product_data.get('tags', '')}\n"
+            prompt += f"TAGS: {product_data.get('tags', '')}\n"
         
-        prompt += f"\n--- GUIDELINES ---\n"
+        prompt += f"\nGUIDELINES\n"
         prompt += f"TONE: {style.get('tone', 'professional')}\n"
         
         prompt += """
@@ -441,17 +441,17 @@ class LLMService:
         prompt += f"PRODUCT NAME: {product_data.get('name', '')}\n"
         prompt += f"BRAND: {product_data.get('brand', '')}\n"
         prompt += f"PRICE: ${product_data.get('price', '')}\n"
-        prompt += f"CATEGORY: ${product_data.get('category', '')}\n"
-        prompt += f"BASIC DESCRIPTION: ${product_data.get('basic_description', '')}\n"
-        prompt += f"MATERIALS: ${product_data.get('materials', '')}\n"
+        prompt += f"CATEGORY: {product_data.get('category', '')}\n"
+        prompt += f"BASIC DESCRIPTION: {product_data.get('basic_description', '')}\n"
+        prompt += f"MATERIALS: {product_data.get('materials', '')}\n"
         
         for feature in product_data['features'][:2]: 
-            prompt += f"FEATURES: ${product_data.get('features', '')}\n"
+            prompt += f"FEATURES: {product_data.get('features', '')}\n"
             
         for tag in product_data['tags']:
-            prompt += f"TAGS: ${product_data.get('tags', '')}\n"
+            prompt += f"TAGS: {product_data.get('tags', '')}\n"
         
-        prompt += f"\n--- GUIDELINES ---\n"
+        prompt += f"\nGUIDELINES\n"
         prompt += f"TONE: {style.get('tone', 'enthusiastic')}\n"
         
         # Generate email based on length
@@ -618,7 +618,56 @@ And so on for each requested platform.
         # TODO: Implement your prompt engineering strategy for generating missing fields
         # CANDIDATE: IMPLEMENT THIS FUNCTION
         
-        prompt = "Generate missing product fields. Add your implementation."
+        REQUIRED_FIELDS = ['name', 'brand', 'basic_description', 'price', 'category', 'subcategory']
+        LIST_FIELDS = ['features', 'materials', 'colors', 'tags']
+        
+        # Check which fields are missing
+        missing_fields = []
+        for field in REQUIRED_FIELDS:
+            if not product_data.get(field):
+                missing_fields.append(field)
+                
+        for field in LIST_FIELDS:
+            value = product_data.get(field)
+            if not value or len(value) == 0:
+                missing_fields.append(field)
+                
+        prompt = f"Generate missing product information fields based on the available data:\n\n"
+        
+        prompt += "PRODUCT INFORMATION:\n"
+        for key, value in product_data.items(): # Returns a list of dict
+            if value:  
+                if isinstance(value, list): # Check for nonempty values
+                    prompt += f"{key.upper()}: {', '.join(str(v) for v in value)}\n" # Handle list values
+                else:
+                    prompt += f"{key.upper()}: {value}\n" # Handle non-list values 
+                    
+        prompt += "\nGUIDELINES\n"
+        
+        prompt += "\nGenerate the following missing fields:\n"
+        for field in missing_fields:
+            prompt += f"- {field}\n"
+            
+        prompt += """
+        - Generate missing values for each product.
+        - Make sure the generated value is realistic and accurate.
+        - Use existing product information to ensure accuracy.
+        - For materials, list 1-3 primary materials used in the product.
+        - For colors, list 2-3 commonly available color options.
+        - For tags/keywords, generate 2-3 relevant search terms.
+        - For prices, give market prices in USD (no symbol).
+        - For description, give a 1-2 sentence brief overview that highlights the strengthen of the product. 
+        
+        Your response should be structured as following (in JSON format):
+        {
+        "field_name": "value",
+        "list_field": ["item1", "item2", "item3"],
+        ...
+        }
+        
+        - Only modify the keys or fields that were missing from the product information.
+        - DO NOT create new information when existing data already exist (e.g., if colors already exist, simply return the same colors).
+        """
         
         return prompt
     

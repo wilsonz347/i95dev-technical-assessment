@@ -797,7 +797,14 @@ And so on for each requested platform.
         # CANDIDATE: IMPLEMENT THIS FUNCTION
         
         # Basic implementation - assuming "Subject Line:" format
-        return "Sample Subject Line"
+        
+        for content in email_content.split('\n'):
+            line = line.strip()
+            if line.lower().startswith('subject line:'):
+                subject_line = line.split(':', 1)[1].strip() # Split the line at the comma and the subject line
+                return subject_line
+        
+        return "" # Return empty string if no subject line
     
     def _extract_email_body(self, email_content: str) -> str:
         """

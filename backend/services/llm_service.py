@@ -383,8 +383,44 @@ class LLMService:
         # TODO: Implement your prompt engineering strategy for SEO content
         # CANDIDATE: IMPLEMENT THIS FUNCTION
         
-        prompt = "Generate SEO-optimized title and meta description for a product. Add your implementation."
+        prompt = f"Generate SEO-optimized title and meta description for the following e-commerce product:\n\n"
         
+        prompt += f"PRODUCT NAME: {product_data.get('name', '')}\n"
+        prompt += f"BRAND: {product_data.get('brand', '')}\n"
+        prompt += f"PRICE: ${product_data.get('price', '')}\n"
+        prompt += f"CATEGORY: ${product_data.get('category', '')}\n"
+        prompt += f"BASIC DESCRIPTION: ${product_data.get('basic_description', '')}\n"
+        prompt += f"MATERIALS: ${product_data.get('materials', '')}\n"
+        
+        for feature in product_data['features'][:2]: 
+            prompt += f"FEATURES: ${product_data.get('features', '')}\n"
+            
+        for tag in product_data['tags']:
+            prompt += f"TAGS: ${product_data.get('tags', '')}\n"
+        
+        prompt += f"\n--- GUIDELINES ---\n"
+        prompt += f"TONE: {style.get('tone', 'professional')}\n"
+        
+        prompt += """
+        Generate a compelling SEO title tag (40 to 50 characters) using the following guidelines:
+        - Start with the primary keyword
+        - Include the brand name and price prominently.
+        - Avoid keyword stuffing but ensure search engine optimization.
+        - Keep it concise and descriptive.
+    
+        META DESCRIPTION REQUIREMENTS:
+        Write a meta description (100-120 characters) adhering to these rules:
+        - Naturally include primary and secondary keywords 
+        - Add a call-to-action like 'shop now,' 'learn more,' or 'discover today').
+        - Avoid repeating the title’s exact phrasing.
+        - Use persuasive phrases like 'exclusive offer,' 'premium quality,' or 'limited-time deal.'
+        
+        Follow this structure when formulating your response:
+        Title: [Your SEO title here]
+
+        Description: [Your meta description here]
+        """
+
         return prompt
     
     def _create_marketing_email_prompt(self, product_data: Dict[str, Any], style: Dict[str, Any]) -> str:

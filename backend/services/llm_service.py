@@ -685,7 +685,39 @@ And so on for each requested platform.
         # TODO: Implement your prompt engineering strategy for image generation
         # CANDIDATE: IMPLEMENT THIS FUNCTION
         
-        prompt = "Generate a product image. Add your implementation."
+        # Product Information
+        product_name = product_data.get('name', '')
+        product_color = product_data.get('colors', '')
+        product_category = product_data.get('category', '')
+        product_subcategory = product_data.get('subcategory', '')
+        product_desc = product_data.get('basic_description', '')
+        product_materials = product_data.get('materials', '')
+        
+        prompt = f"A professional product photograph of {product_name}, a {product_desc}" # Base detail
+        prompt += f", which is a {product_category} in the {product_subcategory} subcategory."
+        prompt += f" The primary color is {product_color[0]}."
+        prompt += f" {product_name} is primarily made out of {product_materials[0]}."
+        
+        image_style = style.get('style', 'clean')
+        background = style.get('background', 'white')
+        
+        prompt += f" The photo is taken on a {background} background with {image_style} styling."
+        
+        lighting = style.get('lighting', 'front lighting')
+        prompt += f" The photograph should be in {lighting}"
+        
+        perspective = style.get('perspective', 'front angle')
+        prompt += f" , taken from a {perspective}.\n"
+        
+        prompt += """
+        Make sure the following photo requirements are met:
+        - Professional and clear e-commerce quality.
+        - No text or labels or watermarks.
+        - Nice composition to enhance the quality of the product.
+        - The color scheme should be visually appealing.
+        - There should be minimal distraction.
+        - Make the photo look natural instead of highly processed.
+        """
         
         return prompt
     

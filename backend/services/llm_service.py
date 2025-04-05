@@ -798,8 +798,8 @@ And so on for each requested platform.
         
         # Basic implementation - assuming "Subject Line:" format
         
-        for content in email_content.split('\n'):
-            line = line.strip()
+        for content in email_content.splitlines():
+            line = content.strip()
             if line.lower().startswith('subject line:'):
                 subject_line = line.split(':', 1)[1].strip() # Split the line at the comma and the subject line
                 return subject_line
@@ -814,7 +814,23 @@ And so on for each requested platform.
         # CANDIDATE: IMPLEMENT THIS FUNCTION
         
         # Basic implementation - assuming "Email Body:" format
-        return "Sample email body content."
+        
+        body_lines = [] # Empty array to store multiple lines
+        capture_multiple = False # Initialize a capturer for body content
+        
+        for content in email_content.splitlines():
+            line = content.strip()
+            if line.lower().startswith('email body:'):
+                capture_multiple = True
+                body_part = line.split(':', 1)[1].strip()
+                if body_part:
+                    body_lines.append(body_part)
+                continue
+            
+            if capture_multiple:
+                body_lines.append(line) # Append the subsequent lines to the array
+            
+        return '\n'.join(body_lines).strip() # Join the elements within the array
     
     def _parse_social_media_response(self, response_text: str, platforms: Dict[str, bool]) -> Dict[str, str]:
         """

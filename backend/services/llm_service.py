@@ -2,6 +2,9 @@
 import openai
 import json
 from typing import Dict, Any, List
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from config import config
 
 class LLMService:

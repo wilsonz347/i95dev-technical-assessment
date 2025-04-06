@@ -3,6 +3,9 @@ import React, { useState } from 'react';
 const GeneratedContent = ({ content, contentTypes, isLoading }) => {
   // State for the active tab
   const [activeTab, setActiveTab] = useState(contentTypes[0] || 'product_description');
+
+  // Rating system (upvote/downvote)
+  const [ratings, setRatings] = useState({});
   
   // Handle tab click
   const handleTabClick = (tab) => {
@@ -13,6 +16,13 @@ const GeneratedContent = ({ content, contentTypes, isLoading }) => {
   const hasContent = (type) => {
     return content && content[type];
   };
+
+  const handleRating = (type, ratings) => {
+    setRatings((prevRatings) => ({
+      ...prevRatings,
+      [type]: ratings,
+    }));
+  }
   
   // Render content for a specific type
   const renderContent = (type) => {
@@ -286,7 +296,27 @@ const GeneratedContent = ({ content, contentTypes, isLoading }) => {
           
           <div className="content-panel">
             {hasContent(activeTab) ? (
-              renderContent(activeTab)
+              <div>
+                {renderContent(activeTab)}
+
+                {/* Rating System */}
+                {/* Only appear when there is generated content */}
+                <div className="rating-buttons">
+                  <button
+                    onClick={() => handleRating(activeTab, 'upvote')}
+                    className={ratings[activeTab] === 'upvote' ? 'active' : ''}
+                  >
+                    👍
+                  </button>
+                  <button
+                    onClick={() => handleRating(activeTab, 'downvote')}
+                    className={ratings[activeTab] === 'downvote' ? 'active' : ''}
+                  >
+                    👎
+                  </button>
+                </div>
+
+              </div>
             ) : (
               <div className="no-content-message">
                 <p>No content generated for this type yet. Click "Generate Content" to create content.</p>

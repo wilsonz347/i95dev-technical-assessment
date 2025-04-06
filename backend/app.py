@@ -82,36 +82,42 @@ async def generate_content(request: ContentRequest):
         # Generate the requested content
         generated_content = {}
         for content_type in request.content_types:
-            if content_type == "product_description":
-                generated_content["product_description"] = llm_service.generate_product_description(
-                    product_data, request.style.dict()
-                )
-            elif content_type == "seo":
-                generated_content["seo"] = llm_service.generate_seo_content(
-                    product_data, request.style.dict()
-                )
-            elif content_type == "marketing_email":
-                generated_content["marketing_email"] = llm_service.generate_marketing_email(
-                    product_data, request.style.dict()
-                )
-            elif content_type == "social_media":
-                if not request.social_media:
-                    request.social_media = SocialMediaConfig()
-                generated_content["social_media"] = llm_service.generate_social_media_content(
-                    product_data, request.style.dict(), request.social_media.dict()
-                )
-            elif content_type == "missing_fields":
-                generated_content["missing_fields"] = llm_service.generate_missing_fields(
-                    product_data
-                )
-            else:
-                raise HTTPException(status_code=400, detail=f"Unknown content type: {content_type}")
+            try:
+                if content_type == "product_description":
+                    generated_content["product_description"] = llm_service.generate_product_description(
+                        product_data, request.style.dict()
+                    )
+                elif content_type == "seo":
+                    generated_content["seo"] = llm_service.generate_seo_content(
+                        product_data, request.style.dict()
+                    )
+                elif content_type == "marketing_email":
+                    generated_content["marketing_email"] = llm_service.generate_marketing_email(
+                        product_data, request.style.dict()
+                    )
+                elif content_type == "social_media":
+                    if not request.social_media:
+                        request.social_media = SocialMediaConfig()
+                    generated_content["social_media"] = llm_service.generate_social_media_content(
+                        product_data, request.style.dict(), request.social_media.dict()
+                    )
+                elif content_type == "missing_fields":
+                    generated_content["missing_fields"] = llm_service.generate_missing_fields(
+                        product_data
+                    )
+                else:
+                    raise HTTPException(status_code=400, detail=f"Unknown content type: {content_type}")
+            except Exception as e:
+                if "quota" in str(e).lower():
+                    raise HTTPException(status_code=429, detail="LLM quota limit reached.")
         
         return {
             "product": product_data,
             "generated_content": generated_content
         }
     
+    except HTTPException as e:
+        raise e
     except Exception as e:
         # Handle any errors from the LLM API
         raise HTTPException(status_code=500, detail=str(e))
@@ -138,6 +144,8 @@ async def generate_image(request: Dict[str, Any]):
         }
     
     except Exception as e:
+        if "quota" in str(e).lower():
+            raise HTTPException(status_code=429, detail="LLM quota limit reached.")
         # Handle any errors from the LLM or Image Generation API
         raise HTTPException(status_code=500, detail=str(e))
 

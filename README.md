@@ -168,3 +168,8 @@ My approach to developing the React frontend involved a structured process of in
 
 - Before writing any code, I carefully reviewed the provided starter kit and the project requirements. I analyzed the existing file structure (App.js, components/, services/api.js) to identify which components needed to be implemented and how they would interact.
 - To gather feedback on the generated content, I implemented an upvote/downvote system using React's useState hook to track the number of upvotes and downvotes.
+
+### Technical Challenges
+- The starter kit included React components that already fulfilled the project's core UI requirements, leading to initial ambiguity regarding the extent of frontend implementation needed.
+- Rate limits imposed by the LLM API restricted the extent of testing and prompt refinement possible within the given timeframe.
+- Initial difficulties navigating the starter kit structure and addressing deployment hurdles consumed more time than anticipated.

@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/i95dev-technical-assessment/static/css/main.f3b0c1a2.css",
+    "main.js": "/i95dev-technical-assessment/static/js/main.fcf7cd9f.js",
+    "index.html": "/i95dev-technical-assessment/index.html",
+    "main.f3b0c1a2.css.map": "/i95dev-technical-assessment/static/css/main.f3b0c1a2.css.map",
+    "main.fcf7cd9f.js.map": "/i95dev-technical-assessment/static/js/main.fcf7cd9f.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.f3b0c1a2.css",
+    "static/js/main.fcf7cd9f.js"
+  ]
+}

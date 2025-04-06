@@ -4,6 +4,10 @@
 
 This project implements an AI-powered product description generator designed to create compelling, SEO-optimized product descriptions and marketing copy from basic product information. The system leverages LLMs to generate missing product fields and product images using available product data.
 
+**Deployment:**
+
+The application has been deployed and is accessible at: https://wilsonz347.github.io/i95dev-technical-assessment/.
+
 ### Project 
 
 #### Backend (Python)
